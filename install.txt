@@ -1,0 +1,13 @@
+Basemap
+conda install -c conda-forge basemap
+conda install -c conda-forge basemap-data-hires
+
+conda install -c conda-forge pygrib 
+
+
+# Is this still necessary?
+# https://proj4.org/install.html
+conda install -c conda-forge proj4
+
+
+
