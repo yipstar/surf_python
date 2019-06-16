@@ -1,3 +1,7 @@
 mpl_toolkits
 Pillow
 netCDF4
+GeoAlchemy2
+Flask-Migrate
+
+

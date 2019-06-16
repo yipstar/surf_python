@@ -4,6 +4,8 @@ from flask_appbuilder import ModelView, ModelRestApi
 
 from . import appbuilder, db
 
+from .models import Buoy
+
 """
     Create your Model based REST API::
 
@@ -32,6 +34,10 @@ from . import appbuilder, db
     )
 """
 
+class BuoyModelView(ModelView):
+    datamodel = SQLAInterface(Buoy)
+    # related_views = [ContactModelView]
+
 """
     Application wide 404 error handler
 """
@@ -47,4 +53,5 @@ def page_not_found(e):
     )
 
 
-db.create_all()
+# db.create_all()
+# db.update_all()
