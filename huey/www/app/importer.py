@@ -14,7 +14,7 @@ def import_buoy_realtime_wave_detail():
     df = pd.read_csv(realtime_url, delim_whitespace=True)
     df = df.replace('MM', np.NaN)
 
-    latest_ob = db.session.query(BuoyRealtimeWaveDetail).filter(BuoyRealtimeWaveDetail.buoy_id == buoy.id ).first()
+    latest_ob = db.session.query(BuoyRealtimeWaveDetail).filter(BuoyRealtimeWaveDetail.buoy_id == buoy.id ).order_by(BuoyRealtimeWaveDetail.ts.desc()).first()
 
     obs = []
 
@@ -25,7 +25,12 @@ def import_buoy_realtime_wave_detail():
         ts = datetime.datetime(int(row['#YY']), int(row['MM']), int(row['DD']), int(row['hh']), int(row['mm']), tzinfo=datetime.timezone.utc)
 
         if latest_ob.ts == ts:
-            print("observation already present, halting import")
+            print(f"observation for date: {ts} already present, saving and then halting import.")
+
+            for ob in obs:
+                db.session.add(ob)
+            db.session.commit()
+
             return
 
         print(f"inserting observation for date: {ts}")
@@ -47,7 +52,6 @@ def import_buoy_realtime_wave_detail():
 
     for ob in obs:
         db.session.add(ob)
-    
     db.session.commit()
     
     print("import complete")
