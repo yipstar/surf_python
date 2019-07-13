@@ -1,6 +1,6 @@
 - Notebook, ingest realtime Buoy Data for specific buoy.
 
-- airflow ingest realtime Wave Detail data for specific buoy.
+ - airflow ingest realtime Wave Detail data for specific buoy.
 
 - Notebook, download WW3 Data.
 - setup airflow to injest buoy latest obs file. once an hour.
