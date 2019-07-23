@@ -1,3 +1,5 @@
+import datetime
+
 from flask_appbuilder import Model
 # from flask_appbuilder.models.mixins import AuditMixin
 
@@ -5,10 +7,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey, \
     Float, DateTime, UniqueConstraint
 
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects import postgresql
 
 from geoalchemy2.types import Geometry
-
-import datetime
 
 """
 
@@ -62,6 +63,39 @@ class BuoyRealtimeWaveDetail(Model):
         UniqueConstraint('buoy_id', 'ts', name='unique_buoy_ts'),
     )
 
+    def __repr__(self):
+        return f"{self.buoy_id} - {ts}"
 
+    @classmethod
+    def from_pd_row(cls, row):
+        ob = cls()
+        ts = cls.ts_from_pd_row(row)
+        # ts = datetime.datetime(int(row['#YY']), int(row['MM']), int(row['DD']), int(row['hh']), int(row['mm']), tzinfo=datetime.timezone.utc)
+        ob.ts = ts
+        ob.significant_wave_height = float(row['WVHT'])
+        ob.swell_height = float(row['SwH'])
+        ob.swell_period = float(row['SwP'])
+        ob.swell_direction = row['SwD']
+        ob.wind_wave_height = float(row['WWH'])
+        ob.wind_wave_period = float(row['WWP'])
+        ob.steepness = row['STEEPNESS']
+        ob.dominant_wave_direction = int(row['MWD'])
+        return ob
 
-# class BuoyRealtimeWaveSpectralRaw
+    @classmethod
+    def ts_from_pd_row(cls, row):
+        return datetime.datetime(int(row['#YY']), int(row['MM']), int(row['DD']), int(row['hh']), int(row['mm']), tzinfo=datetime.timezone.utc)
+
+class RawSpectralWaveData(Model):
+    id = Column(Integer, primary_key=True)
+    buoy_id = Column(Integer, ForeignKey('buoy.id'), nullable=False)
+    buoy = relationship("Buoy")
+    ts = Column(DateTime(timezone=True), nullable=False)
+    sep_freq = Column(Float())
+    spec_x = Column(postgresql.ARRAY(Float), default='{}')
+    spec_y = Column(postgresql.ARRAY(Float), default='{}')
+    created_at = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+    updated_at = Column(DateTime(timezone=True))
+    __table_args__ = (
+        UniqueConstraint('buoy_id', 'ts', name='unique_buoy_raw_spectral_wave_data_ts'),
+    )
