@@ -8,7 +8,9 @@ from app import appbuilder, db
 
 # from . import appbuilder, db
 
-from .models import Buoy, BuoyRealtimeWaveDetail
+from .models import Buoy, \
+    BuoyRealtimeWaveDetail, \
+    RawSpectralWaveData
 
 """
     Create your Model based REST API::
@@ -40,6 +42,7 @@ from .models import Buoy, BuoyRealtimeWaveDetail
 
 class BuoyRealtimeWaveDetailModelView(ModelView):
     datamodel = SQLAInterface(BuoyRealtimeWaveDetail)
+    base_order = ('ts', 'desc')
 
     label_columns = {'buoy': 'Buoy'}
     list_columns = ['buoy',
@@ -72,6 +75,27 @@ class BuoyRealtimeWaveDetailModelView(ModelView):
     #     ),
     # ]
 
+class RawSpectralWaveDataModelView(ModelView):
+    datamodel = SQLAInterface(RawSpectralWaveData)
+    base_order = ('ts', 'desc')
+
+    label_columns = {'buoy': 'Buoy'}
+    list_columns = ['buoy',
+                    'ts',
+                    # 'significant_wave_height',
+                    # 'swell_height',
+                    # 'swell_period',
+                    # 'swell_direction',
+                    # 'wind_wave_height',
+                    # 'wind_wave_period',
+                    # 'steepness',
+                    # 'average_wave_period',
+                    # 'dominant_wave_direction',
+                    'created_at',
+                    'updated_at']
+    # show_exclude_columns = ['spec_x', 'spec_y']
+    search_exclude_columns = ['spec_x', 'spec_y']
+
 class BuoyModelView(ModelView):
     datamodel = SQLAInterface(Buoy)
     related_views = [BuoyRealtimeWaveDetailModelView]
@@ -94,6 +118,14 @@ appbuilder.add_view(
     "List Realtime Wave Detail Data",
     icon = "fa-envelope",
     category = "Buoys"
+)
+
+appbuilder.add_view(
+    RawSpectralWaveDataModelView,
+    "List Raw Spectral Wave Data",
+    icon = "fa-folder-open-o",
+    category = "Buoys",
+    category_icon = "fa-envelope"
 )
 
 """

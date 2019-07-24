@@ -80,6 +80,7 @@ class BuoyRealtimeWaveDetail(Model):
         ob.wind_wave_period = float(row['WWP'])
         ob.steepness = row['STEEPNESS']
         ob.dominant_wave_direction = int(row['MWD'])
+
         return ob
 
     @classmethod
@@ -99,3 +100,30 @@ class RawSpectralWaveData(Model):
     __table_args__ = (
         UniqueConstraint('buoy_id', 'ts', name='unique_buoy_raw_spectral_wave_data_ts'),
     )
+
+    @classmethod
+    def from_data_line(cls, line):
+        columns = line.split()
+
+        ob = cls()
+        ob.ts = datetime.datetime(int(columns[0]), int(columns[1]), int(columns[2]), int(columns[3]), int(columns[4]), tzinfo=datetime.timezone.utc)
+        ob.sep_freq = columns[5]
+
+        x, y = [], []
+        count = 0
+        for val in columns[6:]:
+            if (count % 2 == 0):
+                x.append(float(val))
+            else:
+                val = val.replace('(', '')
+                val = val.replace(')', '')
+                y.append(float(val))
+
+            count += 1
+
+        ob.spec_x = x
+        ob.spec_y = y
+
+        return ob
+
+

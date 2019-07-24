@@ -10,7 +10,8 @@ from datetime import datetime, timedelta
 
 import sys
 sys.path.append("..")
-from app.importer import import_buoy_realtime_wave_detail
+from app.importer import import_buoy_realtime_wave_detail, \
+    import_raw_spectral_wave_data
 
 from pprint import pprint
 
@@ -61,3 +62,12 @@ t3 = PythonOperator(
     dag=dag,
 )
 
+def run_import_buoy_raw_spectral_wave_data(ds, **kwargs):
+    import_raw_spectral_wave_data()
+
+t3 = PythonOperator(
+    task_id='import_buoy_raw_spectral_wave_data',
+    provide_context=True,
+    python_callable=run_import_buoy_raw_spectral_wave_data,
+    dag=dag,
+)
