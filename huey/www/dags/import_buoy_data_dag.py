@@ -27,10 +27,10 @@ from pprint import pprint
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2015, 6, 1),
-    'email': ['airflow@example.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
+    'start_date': datetime(2019, 7, 24),
+    'email': ['gianni.jacklone@gmail.com'],
+    'email_on_failure': True,
+    'email_on_retry': True,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     # 'queue': 'bash_queue',
@@ -39,8 +39,13 @@ default_args = {
     # 'end_date': datetime(2016, 1, 1),
 }
 
+# @hourly
 dag = DAG(
-    'huey_import_buoy_data', default_args=default_args, schedule_interval=timedelta(days=1))
+    'huey_import_buoy_data', \
+    default_args=default_args, \
+    schedule_interval="0 * * * *", \
+    catchup=False
+)
 
 # t1, t2 and t3 are examples of tasks created by instantiating operators
 t1 = BashOperator(
