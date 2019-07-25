@@ -8,8 +8,17 @@ from airflow.operators.python_operator import PythonOperator
 
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import os
+APP_PATH = os.getenv("APP_PATH")
+
 import sys
-sys.path.append("..")
+# sys.path.append("/Users/yipstar/real_projects/surf_python/huey/www")
+sys.path.append(APP_PATH)
+# sys.path.append("../")
+
 from app.importer import import_buoy_realtime_wave_detail, \
     import_raw_spectral_wave_data
 
