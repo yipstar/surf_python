@@ -6,6 +6,10 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 
+from airflow.hooks.postgres_hook import PostgresHook
+from sqlalchemy.orm.session import sessionmaker
+
+
 from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
@@ -47,41 +51,29 @@ dag = DAG(
     catchup=False
 )
 
-# t1, t2 and t3 are examples of tasks created by instantiating operators
-t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
-    dag=dag)
+def get_db_session():
+    engine = PostgresHook(postgres_conn_id='huey_dev').get_sqlalchemy_engine()
+    Session = sessionmaker()
+    Session.configure(bind=engine)
+    db_session = Session()
+    return db_session
 
-
-def print_context(ds, **kwargs):
-    pprint(kwargs)
-    print(ds)
-    return 'Whatever you return gets printed in the logs'
-
-t2 = PythonOperator(
-    task_id='print_the_context',
-    provide_context=True,
-    python_callable=print_context,
-    dag=dag,
-)
-
-def run_import_buoy_realtime_wave_detail(ds, **kwargs):
-    import_buoy_realtime_wave_detail()
+def run_import_buoy_realtime_wave_detail(**kwargs):
+    db_session = get_db_session()
+    import_buoy_realtime_wave_detail(db_session)
 
 t3 = PythonOperator(
     task_id='import_buoy_realtime_wave_detail',
-    provide_context=True,
     python_callable=run_import_buoy_realtime_wave_detail,
     dag=dag,
 )
 
-def run_import_buoy_raw_spectral_wave_data(ds, **kwargs):
-    import_raw_spectral_wave_data()
+def run_import_buoy_raw_spectral_wave_data(**kwargs):
+    db_session = get_db_session()
+    import_raw_spectral_wave_data(db_session)
 
-t3 = PythonOperator(
+t4 = PythonOperator(
     task_id='import_buoy_raw_spectral_wave_data',
-    provide_context=True,
     python_callable=run_import_buoy_raw_spectral_wave_data,
     dag=dag,
 )
