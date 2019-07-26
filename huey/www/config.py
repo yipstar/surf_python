@@ -21,6 +21,7 @@ SECRET_KEY = "\2\1thisismyscretkey\1\2\e\y\y\h"
 
 # SQLALCHEMY_DATABASE_URI = 'postgresql://yipstar@localhost/huey_dev'
 SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 # Flask-WTF flag for CSRF
 CSRF_ENABLED = True
@@ -113,3 +114,5 @@ IMG_UPLOAD_URL = "/static/uploads/"
 # APP_THEME = "spacelab.css"
 # APP_THEME = "united.css"
 # APP_THEME = "yeti.css"
+
+

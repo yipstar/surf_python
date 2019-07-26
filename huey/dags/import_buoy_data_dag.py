@@ -23,8 +23,10 @@ import sys
 sys.path.append(APP_PATH)
 # sys.path.append("../")
 
-from app.importer import import_buoy_realtime_wave_detail, \
+from importer import import_buoy_realtime_wave_detail, \
     import_raw_spectral_wave_data
+
+from utils import get_db_session
 
 from pprint import pprint
 
@@ -50,13 +52,6 @@ dag = DAG(
     schedule_interval="0 * * * *", \
     catchup=False
 )
-
-def get_db_session():
-    engine = PostgresHook(postgres_conn_id='huey_dev').get_sqlalchemy_engine()
-    Session = sessionmaker()
-    Session.configure(bind=engine)
-    db_session = Session()
-    return db_session
 
 def run_import_buoy_realtime_wave_detail(**kwargs):
     db_session = get_db_session()

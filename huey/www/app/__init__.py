@@ -15,6 +15,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 app.config.from_object("config")
+
 db = SQLA(app)
 migrate = Migrate(app, db)
 appbuilder = AppBuilder(app, db.session)

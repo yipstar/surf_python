@@ -4,8 +4,7 @@ import os
 import datetime
 import requests
 
-# from app import db
-from app.models import Buoy, BuoyRealtimeWaveDetail, RawSpectralWaveData
+from models import Buoy, BuoyRealtimeWaveDetail, RawSpectralWaveData
 
 def import_buoy_realtime_wave_detail(db_session):
     station_id = "46025"
