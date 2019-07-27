@@ -4,7 +4,7 @@ import os
 import datetime
 import requests
 
-from huey.models import Buoy, BuoyRealtimeWaveDetail, RawSpectralWaveData
+from huey.models import Buoy, BuoyRealtimeWaveDetail, BuoyRawSpectralWaveData
 
 def import_buoy_realtime_wave_detail(db_session):
     station_id = "46025"
@@ -22,7 +22,7 @@ id ).order_by(BuoyRealtimeWaveDetail.ts.desc()).first()
         ob = BuoyRealtimeWaveDetail.from_pd_row(row)
         ob.buoy = buoy
 
-        if ob.ts > latest_ob.ts:
+        if (latest_ob is None or ob.ts > latest_ob.ts):
             print(f"inserting observation for date: {ob.ts}")
             db_session.add(ob)
         else:
@@ -32,10 +32,10 @@ id ).order_by(BuoyRealtimeWaveDetail.ts.desc()).first()
     db_session.commit()
     print("import complete")
 
-def import_raw_spectral_wave_data(db_session):
+def import_buoy_raw_spectral_wave_data(db_session):
     station_id = "46025"
     buoy = db_session.query(Buoy).filter(Buoy.station_id == station_id).first()
-    latest_ob = db_session.query(RawSpectralWaveData).filter(RawSpectralWaveData.buoy_id == buoy.id ).order_by(RawSpectralWaveData.ts.desc()).first()
+    latest_ob = db_session.query(BuoyRawSpectralWaveData).filter(BuoyRawSpectralWaveData.buoy_id == buoy.id ).order_by(BuoyRawSpectralWaveData.ts.desc()).first()
 
     raw_spec_url = f"https://www.ndbc.noaa.gov/data/realtime2/{station_id}.data_spec"
     response = requests.get(raw_spec_url)
@@ -44,10 +44,10 @@ def import_raw_spectral_wave_data(db_session):
     # skip first row which is header
     for line in data.splitlines()[1:]:
     
-        ob = RawSpectralWaveData.from_data_line(line)
+        ob = BuoyRawSpectralWaveData.from_data_line(line)
         ob.buoy = buoy
 
-        if ob.ts > latest_ob.ts:
+        if (latest_ob is None or ob.ts > latest_ob.ts):
             print(f"inserting observation for date: {ob.ts}")
             db_session.add(ob)
         else:

@@ -87,7 +87,7 @@ class BuoyRealtimeWaveDetail(Model):
     def ts_from_pd_row(cls, row):
         return datetime.datetime(int(row['#YY']), int(row['MM']), int(row['DD']), int(row['hh']), int(row['mm']), tzinfo=datetime.timezone.utc)
 
-class RawSpectralWaveData(Model):
+class BuoyRawSpectralWaveData(Model):
     id = Column(Integer, primary_key=True)
     buoy_id = Column(Integer, ForeignKey('buoy.id'), nullable=False)
     buoy = relationship("Buoy")

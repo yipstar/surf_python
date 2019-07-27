@@ -24,7 +24,7 @@ sys.path.append(APP_PATH)
 # sys.path.append("../")
 
 from huey.importer import import_buoy_realtime_wave_detail, \
-    import_raw_spectral_wave_data
+    import_buoy_raw_spectral_wave_data
 
 from huey.utils import get_db_session
 
@@ -34,7 +34,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2019, 7, 24),
-    'email': ['gianni.jacklone@gmail.com'],
+    'email': ['heyhueyapp@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 1,
@@ -65,7 +65,7 @@ t3 = PythonOperator(
 
 def run_import_buoy_raw_spectral_wave_data(**kwargs):
     db_session = get_db_session()
-    import_raw_spectral_wave_data(db_session)
+    import_buoy_raw_spectral_wave_data(db_session)
 
 t4 = PythonOperator(
     task_id='import_buoy_raw_spectral_wave_data',
