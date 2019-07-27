@@ -23,10 +23,10 @@ import sys
 sys.path.append(APP_PATH)
 # sys.path.append("../")
 
-from importer import import_buoy_realtime_wave_detail, \
+from huey.importer import import_buoy_realtime_wave_detail, \
     import_raw_spectral_wave_data
 
-from utils import get_db_session
+from huey.utils import get_db_session
 
 from pprint import pprint
 
