@@ -46,31 +46,19 @@ default_args = {
     # 'end_date': datetime(2016, 1, 1),
 }
 
-def send_slack_alert():
-    slack_token = BaseHook.get_connection('slack').password
-    alert = SlackAPIPostOperator(
-        task_id='huey_import_buoy_data_success',
-        token=slack_token,
-        text='Buoy Data Import Success.',
-        channel='#huey_data_import',
-        username='heyhueyapp'
-    )
-    return alert.execute(context=None)
-
 # @hourly
 dag = DAG(
     'huey_import_buoy_data', \
     default_args=default_args, \
     schedule_interval="0 * * * *", \
-    catchup=False,
-    on_success_callback=send_slack_alert
+    catchup=False
 )
 
 def run_import_buoy_realtime_wave_detail(**kwargs):
     db_session = get_db_session()
     import_buoy_realtime_wave_detail(db_session)
 
-t3 = PythonOperator(
+t1 = PythonOperator(
     task_id='import_buoy_realtime_wave_detail',
     python_callable=run_import_buoy_realtime_wave_detail,
     dag=dag,
@@ -80,8 +68,18 @@ def run_import_buoy_raw_spectral_wave_data(**kwargs):
     db_session = get_db_session()
     import_buoy_raw_spectral_wave_data(db_session)
 
-t4 = PythonOperator(
+t2 = PythonOperator(
     task_id='import_buoy_raw_spectral_wave_data',
     python_callable=run_import_buoy_raw_spectral_wave_data,
     dag=dag,
+)
+
+slack_token = BaseHook.get_connection('slack').password
+t3 = SlackAPIPostOperator(
+    task_id='send_slack_success_alert',
+    token=slack_token,
+    text='Buoy Data Import Success.',
+    channel='#huey_data_import',
+    username='heyhueyapp',
+    dag=dag
 )
