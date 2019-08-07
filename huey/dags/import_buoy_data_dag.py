@@ -55,7 +55,7 @@ def send_slack_alert():
         channel='#huey_data_import',
         username='heyhueyapp'
     )
-    return alert.execute(context=context)
+    return alert.execute(context=None)
 
 # @hourly
 dag = DAG(
