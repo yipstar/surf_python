@@ -7,6 +7,9 @@ from airflow.operators.bash_operator import BashOperator
 from airflow.operators.python_operator import PythonOperator
 
 from airflow.hooks.postgres_hook import PostgresHook
+from airflow.operators.slack_operator import SlackAPIPostOperator
+from airflow.hooks.base_hook import BaseHook
+
 from sqlalchemy.orm.session import sessionmaker
 
 
@@ -19,9 +22,7 @@ import os
 APP_PATH = os.getenv("APP_PATH")
 
 import sys
-# sys.path.append("/Users/yipstar/real_projects/surf_python/huey/www")
 sys.path.append(APP_PATH)
-# sys.path.append("../")
 
 from huey.importer import import_buoy_realtime_wave_detail, \
     import_buoy_raw_spectral_wave_data
@@ -45,12 +46,24 @@ default_args = {
     # 'end_date': datetime(2016, 1, 1),
 }
 
+def send_slack_alert():
+    slack_token = BaseHook.get_connection('slack').password
+    alert = SlackAPIPostOperator(
+        task_id='huey_import_buoy_data_success',
+        token=slack_token,
+        text='Buoy Data Import Success.',
+        channel='#huey_data_import',
+        username='heyhueyapp'
+    )
+    return alert.execute(context=context)
+
 # @hourly
 dag = DAG(
     'huey_import_buoy_data', \
     default_args=default_args, \
     schedule_interval="0 * * * *", \
-    catchup=False
+    catchup=False,
+    on_success_callback=send_slack_alert
 )
 
 def run_import_buoy_realtime_wave_detail(**kwargs):
