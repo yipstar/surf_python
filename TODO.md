@@ -11,3 +11,6 @@
 - watch notifications.
 
 - look into postgres partitioning. compare to timescale db.
+
+- Check BigQuery public datasets, lots of NOAA data.
+https://console.cloud.google.com/marketplace/details/noaa-public/hrrr?filter=solution-type:dataset&id=904d9161-5476-4e21-923a-5c180f182f24
