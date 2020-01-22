@@ -10,13 +10,13 @@ from ..sql import get_db_engine
 
 # Cell
 def ts_from_df_row(row):
-        return datetime.datetime(
+        return datetime(
             int(row['#YY']),
             int(row['MM']),
             int(row['DD']),
             int(row['hh']),
             int(row['mm']),
-            tzinfo=datetime.timezone.utc)
+            tzinfo=timezone.utc)
 
 # Cell
 def import_buoy_realtime_wave_detail(station_id):
@@ -50,13 +50,13 @@ def import_buoy_realtime_wave_detail(station_id):
     df2 = df2[1:]
 
     def ts_from_df_row(row):
-        return datetime.datetime(
+        return datetime(
             int(row['#YY']),
             int(row['MM']),
             int(row['DD']),
             int(row['hh']),
             int(row['mm']),
-            tzinfo=datetime.timezone.utc)
+            tzinfo=timezone.utc)
 
     df2["ts"] = df2.apply(lambda row: ts_from_df_row(row), axis=1)
     df2 = df2.drop(columns=['#YY', 'MM', 'DD', 'hh', 'mm'])

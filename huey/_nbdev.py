@@ -6,10 +6,15 @@ index = {"singleton": "01_data.sql.ipynb",
          "DB": "01_data.sql.ipynb",
          "get_db_engine": "01_data.sql.ipynb",
          "ts_from_df_row": "02_data.importer.buoy_data.ipynb",
-         "import_buoy_realtime_wave_detail": "02_data.importer.buoy_data.ipynb"}
+         "import_buoy_realtime_wave_detail": "02_data.importer.buoy_data.ipynb",
+         "default_args": "03_dag.buoy_data.ipynb",
+         "dag": "03_dag.buoy_data.ipynb",
+         "run_import_buoy_realtime_wave_detail": "03_dag.buoy_data.ipynb",
+         "t1": "03_dag.buoy_data.ipynb"}
 
 modules = ["data/sql.py",
-           "data/importer/buoy_data.py"]
+           "data/importer/buoy_data.py",
+           "dag/buoy_data.py"]
 
 doc_url = "https://yipstar.github.io/huey/"
 

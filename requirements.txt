@@ -1,3 +1,7 @@
 GeoAlchemy2
 nbdev
 matplotlib
+cryptography
+apache-airflow==1.10.8
+apache-airflow[postgres]
+
