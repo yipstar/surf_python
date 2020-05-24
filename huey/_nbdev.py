@@ -15,6 +15,8 @@ index = {"singleton": "01_data.sql.ipynb",
          "t1": "03_dag.buoy_data.ipynb",
          "run_import_buoy_raw_spectral_wave_data": "03_dag.buoy_data.ipynb",
          "t2": "03_dag.buoy_data.ipynb",
+         "slack_token": "03_dag.buoy_data.ipynb",
+         "t3": "03_dag.buoy_data.ipynb",
          "Buoy": "04_data.models.buoy.ipynb",
          "BuoyRawSpectralWaveData": "04_data.models.buoy.ipynb"}
 
