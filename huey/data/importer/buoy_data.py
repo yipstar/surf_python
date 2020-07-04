@@ -42,7 +42,9 @@ def import_buoy_realtime_wave_detail(station_id):
         "SwD": "swell_direction",
         "WWH": "wind_wave_height",
         "WWP": "wind_wave_period",
+        "WWD": "wind_wave_direction",
         "STEEPNESS": "steepness",
+        "APD": "average_wave_period",
         "MWD": "dominant_wave_direction"
     })
 
@@ -60,7 +62,7 @@ def import_buoy_realtime_wave_detail(station_id):
 
     df2["ts"] = df2.apply(lambda row: ts_from_df_row(row), axis=1)
     df2 = df2.drop(columns=['#YY', 'MM', 'DD', 'hh', 'mm'])
-    df2 = df2.drop(columns=['WWD', 'APD'])
+    #df2 = df2.drop(columns=['MWD'])
 
     sql = f"select * from buoy_realtime_wave_detail order by ts desc limit 1"
     latest_ob = pd.read_sql(sql, db_engine, parse_dates=['ts']).iloc[0]

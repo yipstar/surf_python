@@ -23,7 +23,8 @@ index = {"singleton": "01_data.sql.ipynb",
 modules = ["data/sql.py",
            "data/importer/buoy_data.py",
            "dag/buoy_data.py",
-           "data/models/buoy.py"]
+           "data/models/buoy.py",
+           "data/exporter.py"]
 
 doc_url = "https://yipstar.github.io/huey/"
 
