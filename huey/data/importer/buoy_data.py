@@ -19,15 +19,21 @@ def ts_from_df_row(row):
             tzinfo=timezone.utc)
 
 # Cell
+
+from ..sql import get_db_engine
+
 def import_buoy_realtime_wave_detail(station_id):
     db_engine = get_db_engine()
     sql = f"select * from buoy where station_id='{station_id}'"
     buoy = pd.read_sql(sql, db_engine).iloc[0]
+    print(f"buoy: {buoy.station_id} id: {buoy.id}")
 
-    sql = f"select * from buoy_realtime_wave_detail order by ts desc limit 1"
-    latest_ob = pd.read_sql(sql, db_engine, parse_dates=['ts']).iloc[0]
+    sql = f"select * from buoy_realtime_wave_detail where buoy_id={buoy.id} order by ts desc limit 1"
+    latest_ob = pd.read_sql(sql, db_engine, parse_dates=['ts'])
+    print(f"latest_ob: {latest_ob}")
+    print(f"len latest_ob {len(latest_ob)}")
 
-    station_id = "46025"
+
     realtime_url = f"https://www.ndbc.noaa.gov/data/realtime2/{station_id}.spec"
     df = pd.read_csv(realtime_url, delim_whitespace=True)
 
@@ -64,11 +70,11 @@ def import_buoy_realtime_wave_detail(station_id):
     df2 = df2.drop(columns=['#YY', 'MM', 'DD', 'hh', 'mm'])
     #df2 = df2.drop(columns=['MWD'])
 
-    sql = f"select * from buoy_realtime_wave_detail order by ts desc limit 1"
-    latest_ob = pd.read_sql(sql, db_engine, parse_dates=['ts']).iloc[0]
-
-    # only insert latest obs not in the db already
-    df2_latest = df2[df2.ts > latest_ob.ts]
+    if len(latest_ob) > 0:
+        # only insert latest obs not in the db already
+        df2_latest = df2[df2.ts > latest_ob.iloc[0].ts]
+    else:
+        df2_latest = df2
 
     df2_latest.to_sql('buoy_realtime_wave_detail', con=db_engine, if_exists='append', index=False)
 
