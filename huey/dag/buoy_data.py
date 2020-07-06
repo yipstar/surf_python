@@ -56,7 +56,7 @@ active_station_ids = get_all_active_buoy_station_ids()
 
 for station_id in active_station_ids:
 
-    task_id = f"import_buoy_raw_spectral_wave_data-{station_id}"
+    task_id = f"import_buoy_realtime_wave_detail-{station_id}"
 
     task = PythonOperator(task_id=task_id,
                           python_callable=run_import_buoy_realtime_wave_detail,
