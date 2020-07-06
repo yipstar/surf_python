@@ -21,7 +21,7 @@ from sqlalchemy.orm.session import sessionmaker
 # Cell
 @singleton
 class DB:
-    def __init__(self):
+    def __init__(self, ):
         db_env='huey_dev'
         engine = PostgresHook(postgres_conn_id=db_env).get_sqlalchemy_engine(engine_kwargs=dict(poolclass=NullPool))
         self.engine = engine
