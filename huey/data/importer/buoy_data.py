@@ -21,6 +21,7 @@ def ts_from_df_row(row):
 # Cell
 
 from ..sql import get_db_engine
+from urllib.error import HTTPError
 
 def import_buoy_realtime_wave_detail(station_id):
     db_engine = get_db_engine()
@@ -33,9 +34,14 @@ def import_buoy_realtime_wave_detail(station_id):
     print(f"latest_ob: {latest_ob}")
     print(f"len latest_ob {len(latest_ob)}")
 
-
-    realtime_url = f"https://www.ndbc.noaa.gov/data/realtime2/{station_id}.spec"
-    df = pd.read_csv(realtime_url, delim_whitespace=True)
+    try:
+        realtime_url = f"https://www.ndbc.noaa.gov/data/realtime2/{station_id}.spec"
+        df = pd.read_csv(realtime_url, delim_whitespace=True)
+    except HTTPError as e:
+        print(f"Error: {e}")
+        sql = f"update buoy set data_download_active = 'f', data_state = 'no_data' where id = {buoy.id}"
+        db_engine.execute(sql)
+        return
 
     df["buoy_id"] = buoy.id
 
